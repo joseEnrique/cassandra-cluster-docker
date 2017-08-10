@@ -9,8 +9,9 @@ services:
             - ./n1data:/var/lib/cassandra
         environment:
             - CASSANDRA_CLUSTERNAME=dev_cluster
-            - CASSANDRA_TOKEN=12
+            - CASSANDRA_TOKEN=256
             #  - CASSANDRA_SEEDS=localhost
+            - CASSANDRA_BROADCAST=localhost
             - CASSANDRA_SNITCH=GossipingPropertyFileSnitch
         expose:
             - 7000

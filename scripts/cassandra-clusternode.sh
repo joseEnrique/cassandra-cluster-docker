@@ -2,6 +2,7 @@
 
 # Get running container's IP
 IP=`hostname --ip-address | cut -f 1 -d ' '`
+ALL='0.0.0.0'
 if [ $# == 1 ]; then SEEDS="$1,$IP";
 else SEEDS="$IP"; fi
 
@@ -20,8 +21,17 @@ else
 fi
 
 
+if [ -z "$CASSANDRA_BROADCAST" ]; then
+        echo "No BROADCAST specified, by default it is disabled"
+else
+        sed -i -e "s/^\# broadcast_address: 1.2.3.4/broadcast_address: $CASSANDRA_BROADCAST/" $CASSANDRA_CONFIG/cassandra.yaml
+
+fi
+
+
+
 # Dunno why zeroes here
-sed -i -e "s/^rpc_address.*/rpc_address: $IP/" $CASSANDRA_CONFIG/cassandra.yaml
+sed -i -e "s/^rpc_address.*/rpc_address: $ALL/" $CASSANDRA_CONFIG/cassandra.yaml
 
 # Listen on IP:port of the container
 sed -i -e "s/^listen_address.*/listen_address: $IP/" $CASSANDRA_CONFIG/cassandra.yaml
@@ -38,10 +48,13 @@ if [ -z "$CASSANDRA_TOKEN" ]; then
 	echo "Missing initial token for Cassandra"
 	exit -1
 fi
-echo "JVM_OPTS=\"\$JVM_OPTS -Dcassandra.initial_token=$CASSANDRA_TOKEN\"" >> $CASSANDRA_CONFIG/cassandra-env.sh
+sed -i -e "s/^\#num_tokens: 256/num_tokens: $CASSANDRA_TOKEN/" $CASSANDRA_CONFIG/cassandra.yaml
+#echo "JVM_OPTS=\"\$JVM_OPTS -Dcassandra.initial_token=$CASSANDRA_TOKEN\"" >> $CASSANDRA_CONFIG/cassandra-env.sh
 
 # Most likely not needed
-echo "JVM_OPTS=\"\$JVM_OPTS -Djava.rmi.server.hostname=$IP\"" >> $CASSANDRA_CONFIG/cassandra-env.sh
+#echo "JVM_OPTS=\"\$JVM_OPTS -Djava.rmi.server.hostname=$IP\"" >> $CASSANDRA_CONFIG/cassandra-env.sh
+
+
 
 echo "Starting Cassandra on $IP..."
 
