@@ -1,0 +1,27 @@
+# Please note we are using Docker Compose version 3
+version: '3'
+services:
+    DC1N1:
+        image: joseenrique/cassandra
+        networks:
+            - dc1ring
+        volumes:
+            - ./n1data:/var/lib/cassandra
+        environment:
+            - CASSANDRA_CLUSTERNAME=dev_cluster
+            - CASSANDRA_TOKEN=12
+            #  - CASSANDRA_SEEDS=localhost
+            - CASSANDRA_SNITCH=GossipingPropertyFileSnitch
+        expose:
+            - 7000
+            - 7001
+            - 7199
+            - 9042
+            - 9160
+        ulimits:
+            memlock: -1
+            nproc: 32768
+            nofile: 100000
+networks:
+  dc1ring:
+    driver: bridge
