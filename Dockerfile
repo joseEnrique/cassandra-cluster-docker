@@ -1,5 +1,5 @@
 
-# Spotify Cassandra 2.0 Cluster Node Image
+# Podgroup Cassandra 3.11 Cluster Node Image
 #
 # VERSION               0.1
 #
@@ -7,9 +7,8 @@
 # If CASSANDRA_SEEDS is not set, node acts as its own seed
 # If CASSANDRA_TOKEN is not set, startup process is aborted
 
-FROM spotify/cassandra:base
+FROM cassandra:3.11
 
-USER root
 
 # Place cluster-node startup-config script
 ADD scripts/cassandra-clusternode.sh /cassandra-clusternode.sh

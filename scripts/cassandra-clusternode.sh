@@ -24,7 +24,7 @@ fi
 if [ -z "$CASSANDRA_BROADCAST" ]; then
         echo "No BROADCAST specified, by default it is disabled"
 else
-        sed -i -e "s/^\# broadcast_address: 1.2.3.4/broadcast_address: $CASSANDRA_BROADCAST/" $CASSANDRA_CONFIG/cassandra.yaml
+        sed -i -e "s/^\# broadcast_rpc_address: 1.2.3.4/broadcast_rpc_address: $CASSANDRA_BROADCAST/" $CASSANDRA_CONFIG/cassandra.yaml
 
 fi
 
@@ -58,4 +58,4 @@ sed -i -e "s/^\#num_tokens: 256/num_tokens: $CASSANDRA_TOKEN/" $CASSANDRA_CONFIG
 
 echo "Starting Cassandra on $IP..."
 
-exec cassandra -f
+exec cassandra -f -R
