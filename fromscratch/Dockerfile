@@ -9,8 +9,8 @@ RUN apt-get update && \
     echo "deb http://www.apache.org/dist/cassandra/debian 311x main" | \
            tee -a /etc/apt/sources.list.d/cassandra.sources.list && \
     apt-key adv --keyserver pool.sks-keyservers.net --recv-key A278B781FE4B2BDA && \
-    apt install cassandra &&  \
     apt-get update && \
+    apt install cassandra -y &&  \
     echo oracle-java7-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
     apt-get install -y oracle-java8-installer && \
     apt-get clean
