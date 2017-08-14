@@ -3,15 +3,14 @@ version: '3'
 services:
     DC1N1:
         image: joseenrique/cassandra
-        networks:
-            - dc1ring
         volumes:
             - ./n1data:/var/lib/cassandra
+            - ./n1data1:/prueba
         environment:
             - CASSANDRA_CLUSTERNAME=dev_cluster
             - CASSANDRA_TOKEN=256
-            #  - CASSANDRA_SEEDS=localhost
-            - CASSANDRA_BROADCAST=localhost
+            - CASSANDRA_SEEDS=192.168.2.105
+            - CASSANDRA_BROADCAST=192.168.2.105
             - CASSANDRA_SNITCH=GossipingPropertyFileSnitch
         expose:
             - 7000
@@ -19,10 +18,14 @@ services:
             - 7199
             - 9042
             - 9160
+        ports:
+          - 7000:7000
+          - 7001:7001
+          - 7199:7199
+          - 9042:9042
+          - 9160:9160
+
         ulimits:
             memlock: -1
             nproc: 32768
             nofile: 100000
-networks:
-  dc1ring:
-    driver: bridge

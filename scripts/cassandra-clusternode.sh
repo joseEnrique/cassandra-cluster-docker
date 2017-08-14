@@ -3,9 +3,13 @@
 # Get running container's IP
 IP=`hostname --ip-address | cut -f 1 -d ' '`
 ALL='0.0.0.0'
+
+exec cassandra -f -R
+
+
 if [ $# == 1 ]; then SEEDS="$1,$IP";
 else SEEDS="$IP"; fi
-
+rm -rf /var/lib/cassandra/data/system/*
 # Setup cluster name
 if [ -z "$CASSANDRA_CLUSTERNAME" ]; then
         echo "No cluster name specified, preserving default one"
@@ -34,7 +38,7 @@ fi
 sed -i -e "s/^rpc_address.*/rpc_address: $ALL/" $CASSANDRA_CONFIG/cassandra.yaml
 
 # Listen on IP:port of the container
-sed -i -e "s/^listen_address.*/listen_address: $IP/" $CASSANDRA_CONFIG/cassandra.yaml
+sed -i -e "s/^listen_address.*/listen_address: /" $CASSANDRA_CONFIG/cassandra.yaml
 
 # Configure Cassandra seeds
 if [ -z "$CASSANDRA_SEEDS" ]; then
@@ -49,13 +53,18 @@ if [ -z "$CASSANDRA_TOKEN" ]; then
 	exit -1
 fi
 sed -i -e "s/^\#num_tokens: 256/num_tokens: $CASSANDRA_TOKEN/" $CASSANDRA_CONFIG/cassandra.yaml
+
+
+if ! grep -q "auto_bootstrap: false" $CASSANDRA_CONFIG/cassandra.yaml; then
+  sed -i '1s/^/auto_bootstrap: false\n/' $CASSANDRA_CONFIG/cassandra.yaml
+fi
+
 #echo "JVM_OPTS=\"\$JVM_OPTS -Dcassandra.initial_token=$CASSANDRA_TOKEN\"" >> $CASSANDRA_CONFIG/cassandra-env.sh
 
 # Most likely not needed
 #echo "JVM_OPTS=\"\$JVM_OPTS -Djava.rmi.server.hostname=$IP\"" >> $CASSANDRA_CONFIG/cassandra-env.sh
 
 
+cp -r /etc/cassandra/* /prueba/
 
 echo "Starting Cassandra on $IP..."
-
-exec cassandra -f -R

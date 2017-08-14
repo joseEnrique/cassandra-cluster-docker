@@ -12,6 +12,8 @@ FROM cassandra:3.11
 
 # Place cluster-node startup-config script
 ADD scripts/cassandra-clusternode.sh /cassandra-clusternode.sh
+COPY ./cassandra.yaml /etc/cassandra/cassandra.yaml
 
+CMD "bash"
 # Start Cassandra
 ENTRYPOINT ["./cassandra-clusternode.sh"]
