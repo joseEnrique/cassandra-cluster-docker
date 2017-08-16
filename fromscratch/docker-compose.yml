@@ -2,7 +2,7 @@
 version: '3'
 services:
     DC1N1:
-        image: joseenrique/cassandra:3.11
+        image: test
         volumes:
             - ./n1data:/var/lib/cassandra
         environment:
@@ -27,13 +27,3 @@ services:
             memlock: -1
             nproc: 32768
             nofile: 100000
-        networks:
-            vpcbr:
-              ipv4_address: 10.5.0.5
-networks:
-  vpcbr:
-    driver: bridge
-    ipam:
-     config:
-       - subnet: 10.5.0.0/16
-         gateway: 10.5.0.1

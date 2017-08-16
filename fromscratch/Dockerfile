@@ -1,6 +1,9 @@
 FROM ubuntu:16.04
 RUN apt update
 
+ENV CASSANDRA_CONFIG "/etc/cassandra/"
+
+
 
 RUN apt-get update && \
     apt-get upgrade -y && \
@@ -15,4 +18,8 @@ RUN apt-get update && \
     apt-get install -y oracle-java8-installer && \
     apt-get clean
 
-ENTRYPOINT ["bash"]
+COPY ./scripts/cassandra-clusternode.sh /
+
+
+
+ENTRYPOINT ["./cassandra-clusternode.sh"]
