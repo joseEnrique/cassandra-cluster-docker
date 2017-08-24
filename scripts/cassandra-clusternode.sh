@@ -27,6 +27,9 @@ if [ -z "$CASSANDRA_BROADCAST" ]; then
         echo "No BROADCAST specified, by default it is disabled"
 else
         sed -i -e "s/^\# broadcast_rpc_address: 1.2.3.4/broadcast_rpc_address: $CASSANDRA_BROADCAST/" $CASSANDRA_CONFIG/cassandra.yaml
+        if ! grep -q "broadcast_address: $CASSANDRA_BROADCAST" $CASSANDRA_CONFIG/cassandra.yaml; then
+          echo "broadcast_address: $CASSANDRA_BROADCAST" >> $CASSANDRA_CONFIG/cassandra.yaml
+        fi
 
 fi
 # Dunno why zeroes here
@@ -48,13 +51,27 @@ if [ -z "$CASSANDRA_TOKEN" ]; then
 fi
 sed -i -e "s/^\#num_tokens: 256/num_tokens: $CASSANDRA_TOKEN/" $CASSANDRA_CONFIG/cassandra.yaml
 
+# if [ -z "$CASSANDRA_BOOTSTRAP" ]; then
+#         echo "No BROADCAST specified, by default it is disabled"
+# else
+#   if ! grep -q "auto_bootstrap: false" $CASSANDRA_CONFIG/cassandra.yaml; then
+#     sed -i '1s/^/auto_bootstrap: false\n/' $CASSANDRA_CONFIG/cassandra.yaml
+#   fi
+# fi
 
-if ! grep -q "auto_bootstrap: false" $CASSANDRA_CONFIG/cassandra.yaml; then
-  sed -i '1s/^/auto_bootstrap: false\n/' $CASSANDRA_CONFIG/cassandra.yaml
+if [ -z "$CASSANDRA_AUTH" ]; then
+	echo "Missing AUTH for Cassandra"
+	exit -1
 fi
+sed -i -e "s/^authenticator:.*/authenticator: $CASSANDRA_AUTH/" $CASSANDRA_CONFIG/cassandra.yaml
+
+
+
+
 
 echo "MAX_HEAP_SIZE=\"2GB\"" >> $CASSANDRA_CONFIG/cassandra-env.sh
 
+echo "JVM_OPTS=\"\$JVM_OPTS -Dcassandra.replace_address=$CASSANDRA_BROADCAST\"" >> $CASSANDRA_CONFIG/cassandra-env.sh
 #echo "JVM_OPTS=\"\$JVM_OPTS -Dcassandra.initial_token=$CASSANDRA_TOKEN\"" >> $CASSANDRA_CONFIG/cassandra-env.sh
 
 # Most likely not needed

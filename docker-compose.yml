@@ -9,6 +9,7 @@ services:
             - CASSANDRA_CLUSTERNAME=dev_cluster
             - CASSANDRA_TOKEN=256
             - CASSANDRA_SEEDS=8.8.8.8
+            - CASSANDRA_BROADCAST=localhost
             - CASSANDRA_SNITCH=GossipingPropertyFileSnitch
         expose:
             - 7000
@@ -27,13 +28,3 @@ services:
             memlock: -1
             nproc: 32768
             nofile: 100000
-        networks:
-            vpcbr:
-              ipv4_address: 10.5.0.5
-networks:
-  vpcbr:
-    driver: bridge
-    ipam:
-     config:
-       - subnet: 10.5.0.0/16
-         gateway: 10.5.0.1
