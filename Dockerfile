@@ -16,4 +16,4 @@ ADD scripts/cassandra-clusternode.sh /cassandra-clusternode.sh
 
 # Start Cassandra
 ENTRYPOINT ["./cassandra-clusternode.sh"]
-CMD "bash"
+#CMD "bash"
