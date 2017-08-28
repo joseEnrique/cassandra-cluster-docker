@@ -12,6 +12,7 @@ services:
             - CASSANDRA_BROADCAST=192.168.2.105
             - CASSANDRA_SNITCH=GossipingPropertyFileSnitch
             - CASSANDRA_AUTH=PasswordAuthenticator
+            - CASSANDRA_PASSWORD=prueba
         expose:
             - 7000
             - 7001
